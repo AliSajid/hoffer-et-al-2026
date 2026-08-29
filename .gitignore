@@ -344,3 +344,7 @@ tests/*.json
 # Unignore the inst/scripts/ directory
 !inst/scripts/
 docs
+
+# Ignore the figures
+*.jpg
+*.png
