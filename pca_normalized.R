@@ -1,8 +1,7 @@
 suppressPackageStartupMessages({
-    library(tidyverse)
     library(e1071)
     library(KRSA)
-    library(mixOmics)
+    library(tidyverse)
 })
 
 datafile <- file.path("raw", "_ExportsNorm_Default_Mean_260825124141.txt")
@@ -10,21 +9,15 @@ datafile <- file.path("raw", "_ExportsNorm_Default_Mean_260825124141.txt")
 raw_data <- krsa_read(datafile)
 
 clean_data <- raw_data |>
-    select(SampleName, Group = `Comment 3`, Peptide, Signal) |>
+    dplyr::select(SampleName, Group = `Comment 3`, Peptide, Signal) |>
     pivot_wider(names_from = Peptide, values_from = Signal)
 
 data_matrix <- clean_data |>
     column_to_rownames("SampleName") |>
-    select(-Group) |>
+    dplyr::select(-Group) |>
     as.matrix()
 
 label_vector <- clean_data[["Group"]]
-
-##############################################
-# PLS-DA Analysis
-##############################################
-
-pls_fit <- plsda(X = data_matrix, Y = label_vector)
 
 ##############################################
 # PCA Analysis
@@ -54,19 +47,37 @@ pca_boundry_coefs <- coef(pca_boundary)
 pca_basis <- ggplot(pca_data, aes(x = X, y = Y, color = Group, label = Sample))
 
 pca_plot <- pca_basis +
-    geom_point(size = 5L) +
     geom_abline(
-        intercept = pca_boundry_coefs[1L] / -pca_boundry_coefs[3],
-        slope = pca_boundry_coefs[2] / -pca_boundry_coefs[3]
+        intercept = pca_boundry_coefs[1L] / -pca_boundry_coefs[3L],
+        slope = pca_boundry_coefs[2L] / -pca_boundry_coefs[3L],
+        linetype = 2L,
+        linewidth = 2L,
+        color = "grey80"
     ) +
-    scale_color_brewer(
+    geom_point(size = 3L) +
+    scale_color_manual(
+        values = c("coral3", "blue3"),
         limits = c("T", "TCL"),
         labels = c("Tumor", "Tumor Cell Line"),
-        palette = "Dark2", name = ""
+        name = ""
     ) +
     labs(
-        x = str_glue("PC1 - ({pca_variance_percentage[1]} %)"),
-        y = str_glue("PC2 - ({pca_variance_percentage[2]} %)")
+        x = str_glue("Principal Component 1 - ({pca_variance_percentage[1]} %)"),
+        y = str_glue("Principal Component 2 - ({pca_variance_percentage[2]} %)")
     ) +
-    theme_minimal()
+    guides(color = guide_legend(position = "bottom")) +
+    theme_bw()
 pca_plot
+
+ggsave("Tumor_v_CellLine_PCA_plot_MeanScaled.jpg",
+    width = 7L, height = 7L,
+    units = "in",
+    path = "figures",
+    plot = pca_plot
+)
+ggsave("Tumor_v_CellLine_PCA_plot_MeanScaled.svg",
+    width = 7L, height = 7L,
+    units = "in",
+    path = "figures",
+    plot = pca_plot
+)
