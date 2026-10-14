@@ -66,7 +66,8 @@ pca_plot <- pca_basis +
         y = str_glue("Principal Component 2 - ({pca_variance_percentage[2]} %)")
     ) +
     guides(color = guide_legend(position = "bottom")) +
-    theme_bw()
+    theme_bw() +
+    theme(text = element_text(size = 20))
 pca_plot
 
 ggsave("Tumor_v_CellLine_PCA_plot_MeanScaled.jpg",

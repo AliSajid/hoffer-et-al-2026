@@ -235,11 +235,11 @@ heatmap <- Heatmap(
     cluster_row_slices = FALSE,
     cluster_columns = FALSE,
     row_gap = unit(1.5, "mm"),
-    row_names_side = "left",
-    row_names_gp = gpar(fontsize = 8L),
+    row_names_side = "right",
+    row_names_gp = gpar(fontsize = 12L),
     column_names_side = "bottom",
     column_names_gp = gpar(
-        fontsize = 10L,
+        fontsize = 16L,
         fontface = "bold"
     ),
     column_title_rot = 90L,
@@ -283,7 +283,7 @@ pdf(
         "Tumor-v-CellLine-heatmap-MeanUnscaled.pdf"
     ),
     width = 7L,
-    height = 10L
+    height = 20L
 )
 
 draw(
@@ -341,6 +341,7 @@ volcano <- volcano_base +
         limits = c(-2L, 2L)
     ) +
     theme_bw() +
+    theme(text = element_text(size = 20)) +
     labs(
         x = "Relative Phosphorylation",
         y = expression(-log[10L](p.value))
