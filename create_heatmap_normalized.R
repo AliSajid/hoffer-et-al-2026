@@ -39,7 +39,8 @@ clean_data <- select(
     Peptide,
     Signal,
     Group = `Comment 3`
-)
+) |>
+    mutate(Group = factor(Group, levels = c("T", "TCL")))
 
 # -------------------------------------------------------------------------
 # Statistical testing
@@ -67,8 +68,8 @@ tested_data <- clean_data |>
 figure_data <- tested_data |>
     select(
         Peptide,
-        CellLine = estimate1,
-        Tumor = estimate2,
+        CellLine = estimate2,
+        Tumor = estimate1,
         p.value,
         adjusted.p.value
     ) |>
@@ -237,12 +238,12 @@ heatmap <- Heatmap(
     row_gap = unit(1.5, "mm"),
     row_names_side = "right",
     row_names_gp = gpar(fontsize = 12L),
-    column_names_side = "bottom",
+    column_names_side = "top",
     column_names_gp = gpar(
         fontsize = 16L,
         fontface = "bold"
     ),
-    column_title_rot = 90L,
+    column_title_rot = 90,
     row_title_rot = 0L,
     row_title_gp = gpar(
         fontsize = 11L,
@@ -299,7 +300,7 @@ dev.off()
 svg(
     file = file.path(
         "figures",
-        "Tumor-v-CellLine-heatmap-MeanScaled.pdf"
+        "Tumor-v-CellLine-heatmap-MeanScaled.svg"
     ),
     width = 7L,
     height = 20L

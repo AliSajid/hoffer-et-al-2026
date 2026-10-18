@@ -39,7 +39,8 @@ clean_data <- select(
     Peptide,
     Signal,
     Group = `Comment 3`
-)
+) |>
+    mutate(Group = factor(Group, levels = c("T", "TCL")))
 
 # -------------------------------------------------------------------------
 # Statistical testing
@@ -67,8 +68,8 @@ tested_data <- clean_data |>
 figure_data <- tested_data |>
     select(
         Peptide,
-        CellLine = estimate1,
-        Tumor = estimate2,
+        Tumor = estimate1,
+        CellLine = estimate2,
         p.value,
         adjusted.p.value
     ) |>
